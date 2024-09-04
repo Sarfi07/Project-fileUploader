@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const isAtuthenticated = require("../utils/checkAuthentication");
 const dashboardController = require("../controllers/dashboardController");
 
-router.get("/", isAtuthenticated, dashboardController.index);
+const fileRouter = require("./file");
+const folderRouter = require("./folder");
+
+router.get("/", dashboardController.index);
+
+// router.use("/file", fileRouter);
+router.use("/folders", folderRouter);
 
 module.exports = router;

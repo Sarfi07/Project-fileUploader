@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container.mx-auto.mt-10.max-w-lg
+    .bg-white.shadow-md.rounded-lg.p-6
+      h1.text-2xl.font-bold.mb-4 #{title}
+
+      // Form for creating a folder
+      form(method="POST")
+        .mb-4
+          label(for="name", class="block text-gray-700 text-sm font-semibold mb-2") Folder Name
+          input(type="text", id="name", name="name", class="w-full px-3 py-2 border border-gray-300 rounded-md", placeholder="Enter folder name", required, value=`${folder ? folder.name : ''}`)
+
+        .flex.items-center.justify-between
+          button(type="submit", class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500") Submit
+          a(href="/dashboard", class="text-blue-500 hover:text-blue-700") Cancel

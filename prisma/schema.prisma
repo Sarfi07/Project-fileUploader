@@ -14,8 +14,33 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   name     String
   password String
-  username String @unique
+  username String  @unique
+  folder   Folder?
+}
+
+model Folder {
+  id             String   @id @default(uuid())
+  default_folder Boolean?
+  name           String
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String?  @unique
+  parent         Folder?  @relation("ParentFolder", fields: [parentId], references: [id])
+  parentId       String?
+  subFolders     Folder[] @relation("ParentFolder")
+  files          File[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  path      String
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  folderId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

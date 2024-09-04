@@ -50,18 +50,35 @@ exports.signUp_post = [
         });
       } else {
         try {
-          // await db.insertUser(user);
-          await prisma.user.create({
+          // create a default folder for the user
+          const newUser = await prisma.user.create({
             data: {
               name: user.name,
               username: user.username,
               password: user.password,
             },
           });
-          console.log("user created");
+
+          const folder = await prisma.folder.create({
+            data: {
+              name: "Default Folder",
+              userId: newUser.id,
+              default_folder: true,
+            },
+          });
+
+          await prisma.user.update({
+            where: {
+              id: newUser.id,
+            },
+            data: {
+              folder: {
+                connect: { id: folder.id },
+              },
+            },
+          });
 
           const foo = await prisma.user.findMany();
-          console.log(foo);
           res.redirect("/login");
         } catch (err) {
           return next(err);

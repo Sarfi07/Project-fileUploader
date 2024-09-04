@@ -7,6 +7,7 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const dashboardRouter = require("./routes/dashboard");
+const isAtuthenticated = require("./utils/checkAuthentication");
 
 const passport = require("./config/passport");
 const session = require("express-session");
@@ -23,13 +24,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(
+  session({
+    secret: "cats",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // Set cookie expiry to one day
+    },
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/dashboard", dashboardRouter);
+app.use("/dashboard", isAtuthenticated, dashboardRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

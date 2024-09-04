@@ -1,0 +1,57 @@
+extends layout
+
+block content
+  .container.mx-auto.mt-10.max-w-6xl
+    .bg-gray-100.p-6.rounded-lg
+      // Folder Title
+      h1.text-4xl.font-bold.mb-8 Folder: #{folder.name}
+
+      // Back to Dashboard Button
+      .mb-6.flex.justify-end
+        a(href="/dashboard", class="bg-gray-500.text-white.px-4.py-2.rounded-md.hover:bg-gray-600.transition.duration-300") Back to Dashboard
+
+      // Folder Details Section
+      .mb-8
+        h2.text-2xl.font-semibold.text-gray-800 Folder Details
+        p.text-gray-700.mt-1 ID: #{folder.id}
+        p.text-gray-700.mt-1 Created At: #{folder.createdAt.toLocaleString()}
+        p.text-gray-700.mt-1 Updated At: #{folder.updatedAt.toLocaleString()}
+
+      // Action Buttons
+      .mt-6.flex.space-x-4.justify-center
+        a(href=`/dashboard/folders/${folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
+          span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-purple-600.to-pink-500.group-hover_from-pink-500.group-hover_to-purple-600
+          span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
+          span.relative Upload a File
+        a(href=`/dashboard/folders/${folder.id}/create`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-green-500 rounded-full shadow-xl group")
+          span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-green-500.to-teal-400.group-hover_from-teal-400.group-hover_to-green-500
+          span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
+          span.relative Create New Subfolder
+
+      // Subfolders Section
+      if folder.subFolders
+        .mt-10
+          h2.text-2xl.font-semibold.text-gray-800 Your Subfolders
+          .grid.grid-cols-1.gap-4.md_grid-cols-2.lg_grid-cols-3
+            each subFolder in folder.subFolders
+              .bg-white.border.border-gray-300.rounded-lg.shadow-md.p-4.mb-4
+                .flex.items-center
+                  i.fas.fa-folder-open.text-green-600.text-2xl.mr-4
+                  .flex-1
+                    h4.text-md.font-semibold.text-gray-900 #{subFolder.name}
+                    p.text-sm.text-gray-600 Created At: #{subFolder.createdAt.toLocaleString()}
+
+                    // Files in Subfolder Section
+                    if subFolder.files
+                      .mt-2
+                        h5.text-sm.font-semibold.text-gray-800 Files
+                        ul.list-disc.ml-4
+                          each file in subFolder.files
+                            li.text-gray-700
+                              i.fas.fa-file-alt.text-gray-500.mr-2
+                              | #{file.name} (#{file.size} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                    else
+                      p.text-sm.text-gray-500 No files in this subfolder.
+      else
+        .text-center.text-gray-600
+          p You don't have any subfolders yet.

@@ -1,0 +1,59 @@
+extends layout
+
+block content
+  .container.mx-auto.mt-10.max-w-6xl
+    .bg-gray-100.p-6.rounded-lg
+      // User Greeting
+      h1.text-4xl.font-bold.mb-8 Welcome #{user.name}
+
+      // User Details Section
+      .mb-8
+        h2.text-2xl.font-semibold.text-gray-800 User Details
+        p.text-gray-700.mt-1 ID: #{user.id}
+
+      // Action Buttons
+      .mt-6.flex.space-x-4.justify-center
+        a(href=`/dashboard/folders/${user.folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
+          span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-purple-600.to-pink-500.group-hover_from-pink-500.group-hover_to-purple-600
+          span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
+          span.relative Upload a File
+        a(href=`/dashboard/folders/${user.folder.id}/create`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-green-500 rounded-full shadow-xl group")
+          span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-green-500.to-teal-400.group-hover_from-teal-400.group-hover_to-green-500
+          span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
+          span.relative Create New Subfolder
+
+      // Folders Section
+      if folders.length > 0
+        .mt-10
+          h2.text-2xl.font-semibold.text-gray-800 Your Folders
+          .grid.grid-cols-1.gap-4.md_grid-cols-2.lg_grid-cols-3
+            each folder in folders
+              a(href=`/dashboard/folders/${folder.id}`, class="block bg-white border border-gray-300 rounded-lg shadow-md mb-4 transition duration-300 hover:bg-gray-100")
+                .p-4
+                  .flex.items-center.justify-between
+                    .flex.items-center
+                      i.fas.fa-folder.text-blue-600.text-3xl.mr-4
+                      .flex-1
+                        h3.text-lg.font-semibold.text-gray-900 #{folder.name}
+                        p.text-sm.text-gray-600 Created At: #{folder.createdAt.toLocaleString()}
+
+                    // Folder Action Buttons
+                    .flex.space-x-2
+                      a(href=`/dashboard/folders/${folder.id}/update`, class="bg-yellow-400 text-white px-3 py-1 rounded-md hover:bg-yellow-500 transition duration-300") Edit
+
+                      a(href=`/dashboard/folders/${folder.id}/delete`, class="bg-red-400 text-white px-3 py-1 rounded-md hover:bg-red-500 transition duration-300") Delete
+      else
+        .text-center.text-gray-600
+          p You don't have any folders yet.
+
+      // Files Section
+      if folders.files
+        .mt-4
+          h4.text-md.font-semibold.text-gray-800 Files
+          ul.list-disc.ml-4
+            each file in folder.files
+              li.text-gray-700
+                i.fas.fa-file-alt.text-gray-500.mr-2
+                | #{file.name} (#{file.size} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+      else
+        p.text-sm.text-gray-500 No files
