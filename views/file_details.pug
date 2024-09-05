@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    .container.mx-auto.mt-10.max-w-md
+        .bg-gray-100.p-6.rounded-lg.shadow-md
+            // File Details Header
+            h1.text-2xl.font-bold.mb-6.text-center File Details
+
+            // File Details Section
+            .mb-4
+                h2.text-xl.font-semibold.text-gray-800 File: #{file.name}
+                p.text-gray-700.mt-1 ID: #{file.id}
+                p.text-gray-700.mt-1 Size: #{file.sizeInKb} KB
+                p.text-gray-700.mt-1 Uploaded At: #{file.createdAt.toLocaleString()}
+
+            .text-center
+                form(action=`/dashboard/files/download/` method="post")
+                    input(type="hidden" name="filePath", value=file.path)
+                    input(type="hidden" name="filename", value=file.name)
+                    input(type="hidden" name="publicId", value=file.publicId)
+                    button(type="submit" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300")
+                        i.fas.fa-download.mr-2
+                        span Download
+
+
+            // Back to Files List Button
+            .mt-4.text-center
+                a(href=`/dashboard/folders/${file.publicId}` class="inline-block bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300")
+                    i.fas.fa-arrow-left.mr-2
+                    span Back to Files List

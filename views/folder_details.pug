@@ -65,9 +65,10 @@ block content
           p.text-xl.font-semibold.text-red-500 No subfolders found.
           p.text-md.text-gray-500.mt-2 Try adding some by clicking the "Create New Subfolder" button above.
 
+
       // Folder Files Section
       if folder.files.length > 0
-        .mt-4
+        .mt-10
           h4.text-md.font-semibold.text-gray-800 Files
           ul.list-none.ml-0.space-y-2
             each file in folder.files
@@ -75,8 +76,9 @@ block content
                 .flex.items-center
                   i.fas.fa-file-alt.text-gray-500.mr-2
                   .flex-1
-                    span.text-gray-800.font-medium #{file.name}
-                    span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                    a(href="/dashboard/files/"+ file.id+ '/view') 
+                      span.text-gray-800.font-medium #{file.name}
+                      span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
                 form(action="/dashboard/files/delete/" method="POST" class="inline")
                   input(type="hidden" name="publicId", value=file.publicId)
                   input(type="hidden" name="folderId", value=folder.id)
@@ -88,3 +90,4 @@ block content
         .text-center.text-gray-600.mt-10
           p.text-xl.font-semibold.text-red-500 No files found.
           p.text-md.text-gray-500.mt-2 You can upload files by clicking the "Upload a File" button above.
+

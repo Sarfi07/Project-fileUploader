@@ -6,6 +6,10 @@ block content
       // User Greeting
       h1.text-4xl.font-bold.mb-8 Welcome #{user.name}
 
+      // Log Out Button
+      .mb-6.flex.justify-end
+        a(href="/logout" class="bg-gray-500.text-white.px-4.py-2.rounded-md.hover:bg-gray-600.transition.duration-300") Log Out
+
       // User Details Section
       .mb-8
         h2.text-2xl.font-semibold.text-gray-800 User Details
@@ -57,8 +61,9 @@ block content
                 .flex.items-center
                   i.fas.fa-file-alt.text-gray-500.mr-2
                   .flex-1
-                    span.text-gray-800.font-medium #{file.name}
-                    span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                    a(href="/dashboard/files/"+ file.id+ '/view') 
+                      span.text-gray-800.font-medium #{file.name}
+                      span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
                 form(action="/dashboard/files/delete/" method="POST" class="inline")
                   input(type="hidden" name="publicId", value=file.publicId)
                   input(type="hidden" name="folderId", value=defaultFolder.id)

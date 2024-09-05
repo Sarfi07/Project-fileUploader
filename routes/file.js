@@ -17,6 +17,8 @@ const { storage } = require("../config/cloudinary");
 
 const upload = multer({ storage });
 
+router.post("/download", fileController.file_download);
+
 router.get("/:folderId/upload", fileController.upload_get);
 router.post(
   "/:folderId/upload",
@@ -24,6 +26,7 @@ router.post(
   fileController.upload_post
 );
 
+router.get("/:fileId/view", fileController.file_details);
 router.post("/delete", fileController.file_delete_post);
 
 module.exports = router;
