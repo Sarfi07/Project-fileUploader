@@ -8,7 +8,7 @@ block content
 
       // Back to Dashboard Button
       .mb-6.flex.justify-end
-        a(href="/dashboard", class="bg-gray-500.text-white.px-4.py-2.rounded-md.hover:bg-gray-600.transition.duration-300") Back to Dashboard
+        a(href="/dashboard" class="bg-gray-500.text-white.px-4.py-2.rounded-md.hover:bg-gray-600.transition.duration-300") Back to Dashboard
 
       // Folder Details Section
       .mb-8
@@ -19,7 +19,7 @@ block content
 
       // Action Buttons
       .mt-6.flex.space-x-4.justify-center
-        a(href=`/dashboard/folders/${folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
+        a(href=`/dashboard/files/${folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
           span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-purple-600.to-pink-500.group-hover_from-pink-500.group-hover_to-purple-600
           span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
           span.relative Upload a File
@@ -29,7 +29,7 @@ block content
           span.relative Create New Subfolder
 
       // Subfolders Section
-      if folder.subFolders
+      if folder.subFolders.length > 0
         .mt-10
           h2.text-2xl.font-semibold.text-gray-800 Your Subfolders
           .grid.grid-cols-1.gap-4.md_grid-cols-2.lg_grid-cols-3
@@ -45,13 +45,46 @@ block content
                     if subFolder.files
                       .mt-2
                         h5.text-sm.font-semibold.text-gray-800 Files
-                        ul.list-disc.ml-4
+                        ul.list-none.ml-0.space-y-2
                           each file in subFolder.files
-                            li.text-gray-700
-                              i.fas.fa-file-alt.text-gray-500.mr-2
-                              | #{file.name} (#{file.size} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                            li.bg-gray-50.border.border-gray-300.rounded-lg.p-3.flex.justify-between.items-center.shadow-sm
+                              .flex.items-center
+                                i.fas.fa-file-alt.text-gray-500.mr-2
+                                .flex-1
+                                  span.text-gray-800.font-medium #{file.name}
+                                  span.text-sm.text-gray-600.ml-2 (#{file.size} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                              form(action="/dashboard/files/delete/" method="POST" class="inline")
+                                input(type="hidden" name="publicId", value=file.publicId)
+                                button(type="submit" class="bg-red-500.text-white.px-3.py-1.rounded-md.hover:bg-red-600.transition.duration-300.inline-flex.items-center")
+                                  i.fas.fa-trash.mr-2
+                                  span Delete
                     else
                       p.text-sm.text-gray-500 No files in this subfolder.
       else
-        .text-center.text-gray-600
-          p You don't have any subfolders yet.
+        .text-center.text-gray-600.mt-10
+          p.text-xl.font-semibold.text-red-500 No subfolders found.
+          p.text-md.text-gray-500.mt-2 Try adding some by clicking the "Create New Subfolder" button above.
+
+      // Folder Files Section
+      if folder.files.length > 0
+        .mt-4
+          h4.text-md.font-semibold.text-gray-800 Files
+          ul.list-none.ml-0.space-y-2
+            each file in folder.files
+              li.bg-gray-50.border.border-gray-300.rounded-lg.p-3.flex.justify-between.items-center.shadow-sm
+                .flex.items-center
+                  i.fas.fa-file-alt.text-gray-500.mr-2
+                  .flex-1
+                    span.text-gray-800.font-medium #{file.name}
+                    span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                form(action="/dashboard/files/delete/" method="POST" class="inline")
+                  input(type="hidden" name="publicId", value=file.publicId)
+                  input(type="hidden" name="folderId", value=folder.id)
+                  input(type="hidden" name="fileId", value=file.id)
+                  button(type="submit" class="bg-red-500.text-white.px-3.py-1.rounded-md.hover:bg-red-600.transition.duration-300.inline-flex.items-center")
+                    i.fas.fa-trash.mr-2
+                    span Delete
+      else
+        .text-center.text-gray-600.mt-10
+          p.text-xl.font-semibold.text-red-500 No files found.
+          p.text-md.text-gray-500.mt-2 You can upload files by clicking the "Upload a File" button above.

@@ -13,21 +13,25 @@ exports.index = asyncHandler(async (req, res) => {
     },
   });
 
-  const folders = await prisma.folder.findMany({
+  const defaultFolder = await prisma.folder.findFirst({
     where: {
-      parentId: user.folder.id,
+      id: user.folder.id,
     },
     include: {
       files: true,
     },
   });
 
-  console.log(folders);
+  const folders = await prisma.folder.findMany({
+    where: {
+      parentId: user.folder.id,
+    },
+  });
 
   // Render the dashboard template
   res.render("dashboard", {
     user,
-    folders: folders,
-    defaultFolderId: user.folder.id,
+    defaultFolder,
+    folders,
   });
 });

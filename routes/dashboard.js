@@ -7,7 +7,7 @@ const folderRouter = require("./folder");
 
 router.get("/", dashboardController.index);
 
-// router.use("/file", fileRouter);
+router.use("/files", fileRouter);
 router.use("/folders", folderRouter);
 
 module.exports = router;

@@ -12,8 +12,11 @@ exports.folder_details = asyncHandler(async (req, res) => {
       include: {
         subFolders: true,
         files: true,
+        parent: true,
       },
     });
+
+    console.log(folder);
 
     res.render("folder_details", {
       folder,
@@ -84,6 +87,9 @@ exports.folder_update_post = [
         data: {
           name: req.body.name,
         },
+        include: {
+          parent: true,
+        },
       });
 
       updatedFolder.default_folder
@@ -116,9 +122,11 @@ exports.folder_delete_post = asyncHandler(async (req, res) => {
       where: {
         id: req.params.id,
       },
+      include: {
+        parent: true,
+      },
     });
 
-    console.log("delete");
     if (!folder) {
       return res.status(404).send("Folder not found");
     }
@@ -135,7 +143,9 @@ exports.folder_delete_post = asyncHandler(async (req, res) => {
       },
     });
 
-    res.redirect("/dashboard/folders/" + folder.parentId);
+    folder.parent.default_folder
+      ? res.redirect("/dashboard")
+      : res.redirect("/dashboard/folders/" + folder.id);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting folder");

@@ -13,14 +13,14 @@ block content
 
       // Action Buttons
       .mt-6.flex.space-x-4.justify-center
-        a(href=`/dashboard/folders/${user.folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
+        a(href=`/dashboard/files/${user.folder.id}/upload`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-purple-600 rounded-full shadow-xl group")
           span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-purple-600.to-pink-500.group-hover_from-pink-500.group-hover_to-purple-600
           span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
           span.relative Upload a File
         a(href=`/dashboard/folders/${user.folder.id}/create`, class="relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out bg-green-500 rounded-full shadow-xl group")
           span.absolute.inset-0.w-full.h-full.bg-gradient-to-r.from-green-500.to-teal-400.group-hover_from-teal-400.group-hover_to-green-500
           span.absolute.bottom-0.left-0.w-full.h-1.transition-all.duration-300.ease-out.bg-white.opacity-50.group-hover_h-full
-          span.relative Create New Subfolder
+          span.relative Create New Folder
 
       // Folders Section
       if folders.length > 0
@@ -43,17 +43,30 @@ block content
 
                       a(href=`/dashboard/folders/${folder.id}/delete`, class="bg-red-400 text-white px-3 py-1 rounded-md hover:bg-red-500 transition duration-300") Delete
       else
-        .text-center.text-gray-600
-          p You don't have any folders yet.
+        .text-center.text-gray-600.mt-10
+          p.text-xl.font-semibold.text-red-500 No folders found.
+          p.text-md.text-gray-500.mt-2 You can create a new folder by clicking the "Create New Folder" button above.
 
-      // Files Section
-      if folders.files
-        .mt-4
+      // Folder Files Section
+      if defaultFolder.files.length > 0
+        .mt-10
           h4.text-md.font-semibold.text-gray-800 Files
-          ul.list-disc.ml-4
-            each file in folder.files
-              li.text-gray-700
-                i.fas.fa-file-alt.text-gray-500.mr-2
-                | #{file.name} (#{file.size} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+          ul.list-none.ml-0.space-y-2
+            each file in defaultFolder.files
+              li.bg-gray-50.border.border-gray-300.rounded-lg.p-3.flex.justify-between.items-center.shadow-sm
+                .flex.items-center
+                  i.fas.fa-file-alt.text-gray-500.mr-2
+                  .flex-1
+                    span.text-gray-800.font-medium #{file.name}
+                    span.text-sm.text-gray-600.ml-2 (#{file.sizeInKb} KB) - Uploaded At: #{file.createdAt.toLocaleString()}
+                form(action="/dashboard/files/delete/" method="POST" class="inline")
+                  input(type="hidden" name="publicId", value=file.publicId)
+                  input(type="hidden" name="folderId", value=defaultFolder.id)
+                  input(type="hidden" name="fileId", value=file.id)
+                  button(type="submit" class="bg-red-500.text-white.px-3.py-1.rounded-md.hover:bg-red-600.transition.duration-300.inline-flex.items-center")
+                    i.fas.fa-trash.mr-2
+                    span Delete
       else
-        p.text-sm.text-gray-500 No files
+        .text-center.text-gray-600.mt-10
+          p.text-xl.font-semibold.text-red-500 No files found.
+          p.text-md.text-gray-500.mt-2 You can upload files by clicking the "Upload a File" button above.

@@ -1,7 +1,10 @@
-// var express = require("express");
-// var router = express.Router();
-// const fileController = require("../controllers/fileController");
-// const multer = require("multer");
+require("dotenv");
+var express = require("express");
+const asyncHandler = require("express-async-handler");
+var router = express.Router();
+const fileController = require("../controllers/fileController");
+const multer = require("multer");
+
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //     cb(null, "uploads/");
@@ -10,10 +13,17 @@
 //     cb(null, Date.now() + "-" + file.originalname);
 //   },
 // });
+const { storage } = require("../config/cloudinary");
 
-// const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// router.get("/upload", fileController.upload_get);
-// router.post("/upload", upload.single("file"), fileController.upload_post);
+router.get("/:folderId/upload", fileController.upload_get);
+router.post(
+  "/:folderId/upload",
+  upload.single("file"),
+  fileController.upload_post
+);
 
-// module.exports = router;
+router.post("/delete", fileController.file_delete_post);
+
+module.exports = router;
